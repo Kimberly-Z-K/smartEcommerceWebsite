@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <div id="header">
+        <h1> ZEE'S DONUTS</h1>
+        <img src="picturtes-removebg-preview.png">
+        
+    <!--<button id="button">Menu</button>-->
+        
+       
+    <form id="menuForm">
+        <select id="menuSelect">
+        </div>
+            <option value="" disabled selected hidden>Menu</option>
+            <option value="shop.html">Shop</option>
+            <option value="cart.html">Cart</option>
+            <option value="wishlist.html">Wishlist</option>
+            <option value="Accounts.html">Account</option>
+            <option value="About.html">About</option>
+        </select>
+        
+    </form>
+
+<div class="allDonuts">
+    <div class="donut1">
+     <img src="main_donut-removebg-preview.png">
+    </div>
+    <div id="donut2"><img src="47a34c4329ffedcb2d5c381c415fff3f-removebg-preview (1).png"></div>
+ <div id="donut3">
+     <img src="79fbb45cbbdb348fe520626d6e17462f-removebg-preview (1).png">
+     </div>
+     </div>
+    <span id="slogan">A Remedy For your Sweet Tooth!</span>
+    
+   
+ 
+ 
+
+    <script>
+        const menuForm = document.getElementById("menuForm");
+        const menuSelect = document.getElementById("menuSelect");
+
+        menuForm.addEventListener("change", function(event) {
+           
+            event.preventDefault();
+
+            const selectedPage = menuSelect.value;
+
+            if (selectedPage) {
+               
+                window.location.href = selectedPage;
+            } else {
+                alert("Please select a page from the menu.");
+            }
+        });
+    </script>
+</body>
+</html>

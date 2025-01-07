@@ -1,0 +1,174 @@
+body{
+    overflow:hidden;
+    width:100%;
+    height:50%;
+    padding: 1% 1% 1% 1%;
+    background-color: rgb(55, 94, 94);
+
+}
+h1{
+    position:absolute;
+    top:0px;
+    right:20px;
+}
+img{
+    position: absolute;
+    top:40px;
+    right:100px;
+    width:120px;
+    height:120px;
+}
+
+body h1{
+    color: rgb(92, 53, 92);
+    font-family:monospace;
+    font-size: 50px;
+   text-shadow:3px 1px 3px  rgb(245, 14, 133);
+}
+
+#header{
+    width:100%;
+    height:20%;
+    background-color:rgb(79, 154, 154) ;
+   border-style: solid;
+   border-color: rgb(87, 20, 56);
+    position: absolute;
+    right: 0;
+}
+#slogan{
+    position: absolute;
+    margin-top: 20%;
+    left:55%;
+    font-family:'Lucida Sans Unicode';
+    font-size: 40px;
+    color:pink;
+    text-shadow:3px 1px 3px  rgb(245, 14, 133);
+    background-color: rgb(72, 143, 119);
+    border-radius:20px;}
+
+/*#button{
+    position:absolute;
+    top: 140px;
+    right:88%;
+    width:200px;
+    height:50px;
+    font-family:'Lucida Sans Unicode';
+    font-size:25px;
+    color:pink;
+    text-shadow:3px 1px 3px  rgb(245, 14, 133);
+    background-color: rgb(132, 253, 213);
+}
+#button:hover{
+    width:210px;
+    height:60px;
+    color:rgb(123, 119, 119);
+    background-color: rgb(104, 184, 157);
+}*/
+select{
+    font-family:'Lucida Sans Unicode';
+    font-size:25px;
+    color:pink;
+    text-shadow:3px 1px 3px  rgb(245, 14, 133);
+    background-color: rgb(132, 253, 213);
+    border:solid 2px rgb(87, 20, 56);
+}
+#menu select{
+    margin-Top:6%;
+    margin-Left:1%;
+    width:200px;
+    height:50px;
+}
+#menu select option {
+    width:200px;
+    height:50px;
+   /*display: flex;
+    flex-direction: column;*/
+    background-color: rgb(132, 253, 213);
+   text-align: center;
+   font-size: 25px;
+   color: deeppink;
+  
+}
+option{
+    width:200px;
+    height:50px;
+}
+select option :hover{
+    background-color:rgb(132, 253, 213);
+    text-decoration: underline deeppink;
+}
+
+
+/*#menu ul li{
+    display:none;
+}*/
+
+.allDonuts{
+   position: absolute;
+   
+    
+}
+#donut2 img{
+    position:relative;
+    left:400px;
+    top:45%;
+    width: 800px;
+    height: 650px;
+    border-radius:50%;
+    opacity:0;
+    animation: donutCircle 10s ease-in-out infinite;
+    /* animation-delay: 5s;*/
+    
+   
+
+}
+.donut1 img{
+    
+    position:absolute;
+    left:750px;
+    top:40%;
+    width: 500px;
+    height: 650px;
+    border-radius:50%;
+    opacity:0;
+    animation: donutCircle  ease-in-out infinite;
+    animation-duration: 10s;
+   /* animation-delay: 5s;*/
+    
+
+}
+
+#donut3 img{
+    position:absolute;
+    left:100px;
+    top:40%;
+    width:550px;
+    height: 650px; 
+    border-radius:50%;
+    opacity: 0;
+    animation: donutCircle  ease-in-out infinite;
+    animation-duration: 10s;
+   /* animation-delay: 5s;}*/
+}
+
+
+
+
+@keyframes donutCircle {
+    0% {
+      transform: rotate(360deg) translatey(200px) rotate(360deg ) scale(1.5); 
+      opacity:1;
+    
+    }
+    50%{
+        transform: translatex(200px) scale(1);
+        opacity:1;
+    }
+    
+    100% {
+      transform: rotate(90deg) translatex(200px) rotate(-360)  scale(0.5) ;
+      stop-opacity: 0;
+    }
+
+  }
+ 
