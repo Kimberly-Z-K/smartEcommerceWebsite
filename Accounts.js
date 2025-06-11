@@ -22,9 +22,8 @@ const db = getFirestore(app);
 
 let loginBtn=document.getElementById('logbtn');
 
-console.log('we are in the accounts');
 
-
+let mail="";
 setPersistence(auth, browserLocalPersistence)
     .then(() => {
         console.log("Authentication persistence set to LOCAL.");
@@ -32,6 +31,142 @@ setPersistence(auth, browserLocalPersistence)
     .catch((error) => {
         console.error("Error setting persistence:", error.message);
     });
+
+    
+    onAuthStateChanged(auth, async (user) => {
+       let name=document.getElementById('user');
+        if (user) {
+           
+            mail=user.email;
+
+            if(mail){
+               let cusDocs=collection(db,'customers');
+               let q=query(cusDocs,where('Email','==',mail));
+               let docs=await getDocs(q);
+               if(docs){
+                let info=''
+                docs.forEach(doc=>{
+                    info=doc.data();
+                    let nam =info.Username;
+                    name.innerHTML=nam;
+                })
+                
+                  
+               }
+               else{
+                let userDocs=collection(db,'users');
+                let que=query(userDocs,where('email','==',mail));
+                let Docs=await getDocs(que);
+               if(Docs){
+                    let inf='';
+                    Docs.forEach(doc=>{
+                      inf=doc.data();
+                      let Name =inf.username;
+                      name.innerHTML=Name;
+                    })
+
+                  
+                 }
+               }
+
+            }
+            orders(mail);
+            
+            console.log("User is logged in:", user.email);
+        }
+        else{
+            alert.alert('please login for a smooth shopping experience :)');
+        }
+    
+            
+    });  
+
+
+    //get users order
+    const orders=async()=>{
+        let stats=('');
+        let pending=document.getElementById('pending');
+
+        console.log('in oders function email is',mail);
+
+        try{
+          let  ordersdocs= collection(db,'Orders');
+          let q=query(ordersdocs,where('email','==',mail));
+          let ord= await getDocs(q);
+         if(ord){
+            ord.forEach(doc => {
+                let infor=doc.data();
+
+                let category;
+                let name;
+                let price;
+                let quantityBought;
+    
+                infor.items.forEach(item=>{
+                   
+                let cat=document.createElement('h3');
+                let na=document.createElement('h3');
+                let q=document.createElement('h3');
+                let span=document.createElement('span');
+
+            //fetching the data from the database
+                  category=item.category;
+                  name=item.name;
+                  price=item.price;
+                  quantityBought=item.quantityBought;
+                
+                //displaying the data
+                
+                 cat.innerText=category;
+                 na.innerText=name;
+                 q.innerText=quantityBought;
+                 span.innerText=price;
+                 
+ 
+                 let line=document.createElement('div');
+                 line.style.width='100%';
+                 line.style.borderBottom='dashed';
+                 
+                pending.append( cat, na, q,span,line); 
+
+                })
+                
+          let totalp=infor.totalPrice;
+          let h1=document.createElement('h2');
+          h1.innerText=totalp;
+          
+
+           let city=infor.location.city;
+           let cit=document.createElement('h2');
+           cit.innerText=city;
+
+           let country=infor.location.country;
+           let cou=document.createElement('h2');
+           cou.innerText=country;
+
+           let street=infor.location.street;
+           let stree=document.createElement('h2');
+           stree.innerText=street;
+
+       pending.append(h1,cit,cou,stree);
+            });
+
+            
+
+          //  pending.innerText=ord;
+         }
+         else{
+            let h2=document.createElement('h2');
+            h2.innerHTML='ypu have no pending orders';
+            pending.appendChild(h2);
+         }
+          
+        }
+        catch(error){
+            console.error("Error getting user orders:", error.message); 
+        }
+    }
+    
 
 
 if (loginBtn) {
@@ -83,6 +218,7 @@ const login = async () => {
     
  
 };
+//wanted to check type of user logged in
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         console.log("User is logged in:", user.email);
