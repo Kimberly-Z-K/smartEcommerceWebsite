@@ -1,111 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        
-          body {
-          
-          /* justify-content: center;
-           align-items: center;*/
-           height: 100vh; 
-           margin: 0;
-           background-color: rgb(72, 143, 119);
-       }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Store</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-       #title {
-       
-           font-size: 60px;
-           font-family: 'Lucida Sans Unicode';
-           color: pink;
-           text-shadow: 3px 1px 3px rgb(245, 14, 133);
-           text-align: center; 
-         /*  margin-bottom: 20px;*/
-       }
-       #products {
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 20px; 
-    
-    justify-content: center; 
-    align-items: stretch; 
-    padding: 10px;
-}
-
-.product-item {
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    width: 25%; 
-    height: 650px; 
-    text-align: center; 
-    border: 1px solid #ddd; 
-    border-radius: 8px;
-    padding: 10px;
-    background-color: rgb(171, 235, 198 ); 
-    overflow: hidden;
-}
-
-h1{
+<style>
+body {
+    background-color: rgb(55, 94, 94);
     font-family: 'Lucida Sans Unicode';
-    color: rgb(187, 222, 251);
-    text-shadow: 3px 1px 3px rgb(57, 73, 171 );
-  
-    
-}
-#homeicon,#carticon{
-   /* margin-bottom: 50px;*/ 
-    margin-top: 20px;
-    font-size: 70px;
-    color: pink;
-     text-shadow: 3px 1px 3px rgb(245, 14, 133);
-}
-#iconsCont{
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+    padding: 0;
 }
 
-#dvContainer{
+/* PAGE HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
+
+header a {
+    font-size: 30px;
+    color: pink;
+    text-shadow: 3px 1px 3px rgb(245, 14, 133);
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+header a:hover {
+    color: #BDB2FF;
+    transform: scale(1.2);
+}
+
+/* PAGE TITLE */
+h1#storeTitle {
+    text-align: center;
+    color: pink;
+    text-shadow: 3px 1px 3px rgb(245, 14, 133);
+    margin-top: 0;
+    font-size: 60px;
+}
+
+/* LOADING */
+#loading {
+    text-align: center;
+    font-size: 24px;
+    color: pink;
+    text-shadow: 2px 1px 2px rgb(245, 14, 133);
     margin-top: 50px;
 }
-#carticon{
-    font-size: 60px;
-    margin-left: 90%;
+
+/* PRODUCTS CONTAINER */
+#products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 40px auto;
+    gap: 25px;
+    max-width: 1200px;
 }
-button:hover{
-    background-color:rgb(245, 14, 133) ;
+
+/* PRODUCT ITEM */
+.product-item {
+    background-color: #B0C4DE; 
+    width: 280px;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-     
-    </style>
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* PRODUCT IMAGE */
+.product-item img {
+    width: 80%;
+    height: auto;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.product-item img:hover {
+    transform: scale(1.05);
+}
+
+/* PRODUCT NAME & CATEGORY */
+.product-item h1 {
+    font-size: 22px;
+    color: pink;
+    text-shadow: 3px 1px 3px rgb(245, 14, 133);
+    margin: 10px 0 5px;
+}
+
+.product-item span {
+    font-size: 16px;
+    color: pink;
+    text-shadow: 2px 1px 2px rgb(245, 14, 133);
+}
+
+/* DESCRIPTION */
+.product-item p {
+    font-size: 14px;
+    color: pink;
+    margin: 10px 0;
+}
+
+/* ADD TO CART BUTTON */
+.product-item button {
+    margin-top: 10px;
+    width: 80%;
+    padding: 12px;
+    font-size: 18px;
+    background-color: pink;
+    color: rgb(233, 30, 99);
+    text-shadow: 3px 1px 3px rgb(250, 250, 250);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-item button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(245, 14, 133, 0.5);
+}
+
+/* CART BUTTON CONTAINER */
+.product-item div {
+    margin-top: 15px;
+}
+</style>
 </head>
+
 <body>
-    <a href="index.HTML" id="homeiconlink">
-    <i class="bi bi-house" id="homeicon"></i></a>
-    <a href="cart.html" id="cartlink">
-    <i class="fas fa-shopping-cart icon" id="carticon"></i></a>
 
-   
-<h1 id="title">Shop</h1>
-    
-   
-    
-        <div id="dvContainer">
-            <div id="products">
-            
-             
-            </div>
-        </div>
-   
-    
-  
+<header>
+    <a href="index.HTML"><i class="bi bi-house"></i> Home</a>
+    <a href="cart.HTML"><i class="bi bi-cart"></i> Cart</a>
+</header>
 
+<h1 id="storeTitle">Our Store</h1>
 
+<div id="loading">Loading products...</div>
+<div id="products"></div>
 
-    
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDfksP9wLa7sznEWDXSRwhHsgcHNeRAxg8",
+    authDomain: "donutweb-2bf64.firebaseapp.com",
+    projectId: "donutweb-2bf64",
+    storageBucket: "donutweb-2bf64.appspot.com",
+    messagingSenderId: "709582753728",
+    appId: "1:709582753728:web:4a1f1bb40a28bd03f7c225"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const fetchStoreItems = async () => {
+    const div = document.getElementById('products');
+    const loading = document.getElementById('loading');
+    loading.style.display = 'block';
+    div.innerHTML = '';
+
+    try {
+        const productDocs = await getDocs(collection(db, "products"));
+        if (productDocs.empty) {
+            loading.innerText = "No products available.";
+            return;
+        }
+        productDocs.forEach(doc => {
+            const data = doc.data();
+            const { imageUrl, name, category, description, price } = data;
+
+            if (imageUrl) {
+                let productDiv = document.createElement('div');
+                productDiv.classList.add('product-item');
+
+                let cartdiv = document.createElement('div');
+
+                const addCart = document.createElement('button');
+                addCart.innerText = 'Add to cart';
+                addCart.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    moveTocart(doc);
+                });
+
+                let img = document.createElement('img');
+                let p = document.createElement('span');
+                let h = document.createElement('h1');
+                let sech = document.createElement('span');
+                let span = document.createElement('p');
+
+                img.src = imageUrl;
+                h.innerText = name;
+                sech.innerText = category;
+                span.innerText = description;
+                p.innerHTML = 'R' + price;
+
+                cartdiv.appendChild(addCart);
+                productDiv.appendChild(img);
+                productDiv.appendChild(h);
+                productDiv.appendChild(sech);
+                productDiv.appendChild(p);
+                productDiv.appendChild(span);
+                productDiv.appendChild(cartdiv);
+                div.appendChild(productDiv);
+            }
+        });
+    } catch (error) {
+        alert('Error fetching products: ' + error.message);
+        console.error(error);
+    } finally {
+        loading.style.display = 'none';
+    }
+};
+
+const moveTocart = async (doc) => {
+    try {
+        await addDoc(collection(db, 'Cart'), {
+            name: doc.data().name,
+            category: doc.data().category,
+            description: doc.data().description,
+            quantity: doc.data().quantity - 1,
+            imageUrl: doc.data().imageUrl,
+            price: doc.data().price,
+        });
+        alert('Product added to cart');
+    } catch (error) {
+        alert('Error adding to cart: ' + error.message);
+    }
+};
+
+fetchStoreItems();
+</script>
+
 </body>
-<script type="module" src="shop.js"></script>
 </html>

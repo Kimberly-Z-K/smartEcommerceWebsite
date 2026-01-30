@@ -12,7 +12,7 @@
             align-items: center;
             height: 100vh; 
             margin: 0;
-            background-color: rgb(72, 143, 119);
+            background-color: #A8DCAB;
         }
 
         h1 {
@@ -89,6 +89,9 @@
     text-shadow:3px 1px 3px  rgb(245, 14, 133);
     transform: scale(1.2);
    }
+   #removeProd, #red, #orderRemov {
+  display: none; 
+}
     </style>
 </head>
 <body>
@@ -120,7 +123,8 @@
             <label for="price">Price:</label>
             <input id="price" placeholder="Enter product price" required>
             <button id="addProduct">ADD</button>
-            <button id="removeProd">clean Screen</button>
+           
+          <button id="removeProd">clean Screen</button>
             
         </form>
 
@@ -136,12 +140,30 @@
         <button id="red">clean screen</button>
     </div>
     <button id="order">Orders</button>
+
+    <!--Everything for displaying analytics for the admin-->
+
+     <button id="analytics">Analytics</button>
+     <div id="analyticsSection" style="display:none; flex-direction: column; align-items:center;">
+  <h2 style="color:pink; text-shadow: 3px 1px 3px rgb(245, 14, 133);">Sales Analytics</h2>
+  <div style="background:white; padding:20px; border-radius:10px; margin:20px; width:80%;">
+    <canvas id="topSellingChart"></canvas>
+  </div>
+  <div style="background:white; padding:20px; border-radius:10px; margin:20px; width:80%;">
+    <canvas id="loyalClientsChart"></canvas>
+  </div>
+</div>
+
+
+
+       <button id="orderRemov">clean Screen</button> 
     <div id="orders" style="display: none; flex-direction: column;">
    
          
       
-        <button id="orderRemov">clean Screen</button> 
+      
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="Admin.js"></script>
 </body>
 </html>

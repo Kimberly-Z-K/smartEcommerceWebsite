@@ -5,115 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
- #homeicon{
-   /* margin-bottom: 50px;*/ 
-    margin-top: 20px;
+
+<style>
+
+/* PAGE BACKGROUND */
+body{
+    background-color: rgb(55, 94, 94);
+    margin: 0;
+    padding: 0;
+    font-family: 'Lucida Sans Unicode';
+}
+
+/* TITLE */
+#title{
+    text-align: center;
+    margin-top: 30px;
+    font-size: 60px;
+    color: pink;
+    text-shadow: 3px 1px 3px rgb(245, 14, 133);
+    animation: fadeDown 1s ease;
+}
+
+@keyframes fadeDown{
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* HOME ICON */
+#homeicon{
     font-size: 70px;
     color: pink;
-     text-shadow: 3px 1px 3px rgb(245, 14, 133);
+    text-shadow: 3px 1px 3px rgb(245, 14, 133);
+    transition: 0.3s ease-in-out;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
 }
+
 #homeicon:hover{
     color:#BDB2FF;
-    text-shadow:3px 1px 3px  rgb(245, 14, 133);
     transform: scale(1.2);
-   }
+}
 
-body{
-    align-items: center;
-    background-color: rgb(55, 94, 94) ;
-   }
-
-
-   #title{
-     margin-left: 46%;
-    font-size:60px;
-    font-family:'Lucida Sans Unicode';
-
+/* BACK TO SHOP LINK */
+#backshopping{
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 30px;
     color:pink;
     text-shadow:3px 1px 3px  rgb(245, 14, 133);
-   
-   }
-   #backshopping{
-    font-size:30px;
-    font-family:'Lucida Sans Unicode';
+    transition: 0.3s ease-in-out;
+}
 
-    color:pink;
-    text-shadow:3px 1px 3px  rgb(245, 14, 133);
-   
-   }
-   #backshopping:hover{
+#backshopping:hover{
     color:#BDB2FF;
-    text-shadow:3px 1px 3px  rgb(245, 14, 133);
-    transform: scale(1.2);
-   }
-   button,#buying{
-    margin-left:40%;
-    width: 300px;
+    transform: scale(1.1);
+}
 
-    max-width: 100%;
+/* CART SECTION */
+#buyingform{
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+    padding: 30px;
+    background-color: rgba(72, 143, 119, 0.7);
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+    animation: fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* CART ITEMS — container styling added by JS looks okay, so only enhancing */
+#Cartitems{
+    width: 100%;
+}
+
+/* BUY BUTTON */
+#buying{
+    display: block;
+    margin: auto;
+    margin-top: 25px;
+    width: 60%;
+    padding: 15px;
+    font-size: 25px;
     background-color: #C4C7E2;
-    font-family: 'Lucida Sans Unicode';
-    color:  #342c65;
+    border-radius: 12px;
+    color:#342c65;
     text-shadow: 3px 1px 3px rgb(187, 222, 251);
-    transform: scale(1.2);
-   }
-   form{
-    margin-top: 200px;
-    margin-left: 30%;
-     width:50%;
-     padding-left: 10px;
-     padding-bottom: 10px;
-    font-family:'Lucida Sans Unicode';
+    cursor: pointer;
+    border: none;
+    transition: 0.3s ease-in-out;
+}
+
+#buying:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 0px 15px #C4C7E2;
+}
+
+/* TOTAL PRICE */
+#TotalPrice{
+    text-align: center;
+    font-size: 30px;
+    color:pink;
+    text-shadow:3px 1px 3px  rgb(245, 14, 133);
+    margin-top: 20px;
+}
+
+/* EMPTY MESSAGE */
+#emptyMessage{
+    text-align: center;
     font-size: 40px;
     color:pink;
-    text-shadow:3px 1px 3px  rgb(245, 14, 133);
-    background-color: rgb(72, 143, 119);
-    border-radius:20px};
-   #buyingform{
-    padding:50px;
-    align-items: center;
-   }
+    margin-top: 50px;
+}
 
-    
+/* LOCATION FORM */
+#locationform, #paymentform{
+    width: 60%;
+    margin: auto;
+    margin-top: 30px;
+    padding: 25px;
+    background-color: rgb(72, 143, 119);
+    border-radius: 15px;
+    color:pink;
+    text-shadow:3px 1px 3px  rgb(245, 14, 133);
+    animation: fadeUp 0.7s ease;
+}
+
+#locationform input{
+    width: 90%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: 18px;
+}
+
+#sub{
+    width: 80%;
+    margin-left: 10%;
+    padding: 12px;
+    font-size: 22px;
+    background-color: #C4C7E2;
+    border: none;
+    border-radius: 10px;
+    color:#342c65;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+#sub:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 0px 15px #C4C7E2;
+}
+
 </style>
+
 </head>
+
 <body>
+
     <h1 id="title">your cart</h1>
+
     <a href="index.HTML" id="homeiconlink">
-    <i class="bi bi-house" id="homeicon"></i></a>
+        <i class="bi bi-house" id="homeicon"></i>
+    </a>
+
+    <div id="emptyMessage" style="display:none"></div>
 
     <div id="backshopbtn">
         <a href="shop.Html" id="backshopping">Go back to shop</a>
-
     </div>
+
     <form id="buyingform">
         <div id="Cartitems"></div>
         <button id="buying">Buy</button>
-        <div id="Cartitems"></div>
         <h2 id="TotalPrice">Total Price: R0.00</h2>
-
     </form>
+
     <form id="paymentform" style="display: none;">
         <div id="card-element" style="background-color: aliceblue; height:50px;">
-        <h1>Payment</h1>
-       
-</div>
-
+            <h1>Payment</h1>
+        </div>
     </form>
+
     <form id="locationform" style="display: none;">
         <h1>Location</h1>
         <label for="street">street:</label>
         <input id="street" placeholder="Enter street address" required>
+
         <label for="city">City:</label>
         <input id="city" placeholder="enter the city" required>
+
         <label for="country">Country:</label>
         <input id="country" placeholder="enter the country" required>
+
         <button id="sub">submit</button>
     </form>
-   
-    
-    <script src="https://js.stripe.com/v3/"></script>  
-<script type="module" src="cart.js" ></script>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script type="module" src="cart.js"></script>
+
 </body>
 </html>

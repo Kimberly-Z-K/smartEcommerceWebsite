@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 require("dotenv").config();
 const express = require("express");
 const admin = require("./firebaseAdminConfig");
@@ -63,36 +65,28 @@ db.collection("Orders").onSnapshot((snap) => {
     }
   });
 });
-
-app.get("/", async (request, response) => {
+//second route to get data from the s3 bucket
+app.get("https://newdonut.s3.eu-north-1.amazonaws.com/orders.json", async (req, res) => {
   try {
-    const Docs = await db.collection("Orders").get();
-    let orders = {};
-  Docs.forEach((doc) => {
-  let data = doc.data();
-  let email = data.email;
-
-  if (email && typeof email === "string") {
-    orders[email.toLowerCase()] = data;
-  } else {
-    console.warn(`Skipping document ${doc.id}: no valid email`);
-  }
-});
-
-
-    const dataS = JSON.stringify(orders);
-
-    const uploadParameters = {
+    const getObjCommand = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: "orders.json",
-      Body: dataS,
-      ContentType: "application/json",
-    };
+    });
 
-    await awss3.send(new PutObjectCommand(uploadParameters));
-    response.json({ message: "Data uploaded to S3 successfully!" });
-  } catch (error) {
-    response.status(500).json({ error: error.message });
+    const data = await awss3.send(getObjCommand);
+    const bodyContents = await streamToString(data.Body);
+
+    res.json(JSON.parse(bodyContents));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
+
+const streamToString = (stream) =>
+  new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on("data", (chunk) => chunks.push(chunk));
+    stream.on("error", reject);
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+  });

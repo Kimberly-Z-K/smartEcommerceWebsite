@@ -49,10 +49,13 @@ setPersistence(auth, browserLocalPersistence)
     let removedItems=[];
     let loc={};
    let newP=0;
+    let CartDiv = document.createElement('div');
    let div = document.getElementById('Cartitems'); 
-   let CartDiv = document.createElement('div');
+   
    const fetchCart = async () => {
-        
+      
+    
+   
    
     const totalDisplay = document.getElementById('TotalPrice'); 
     let totalPrice = 0; 
@@ -65,8 +68,25 @@ setPersistence(auth, browserLocalPersistence)
 
     try {
         const cartSnapshot = await getDocs(collection(db, 'Cart'));
+        
        
+        if(cartSnapshot.empty){
+            
+            let cartspace= document.getElementById("buyingform");
+            cartspace.style.display="none";
+            let emptyCart=document.getElementById("emptyMessage");
+
+            emptyCart.innerText="Cart is empty ";
+             emptyCart.style.display="block";
+
+        }
+        
+        
+        
+        
         cartSnapshot.docs.forEach((doc) => {
+           
+             CartDiv.classList.add('cart-item');
             const removal=document.createElement('button');
             removal.innerText='remove';
             removal.style.fontSize='10px';
@@ -84,7 +104,7 @@ setPersistence(auth, browserLocalPersistence)
             if (imageUrl) {
 
                
-                CartDiv.classList.add('cart-item');
+               
 
 //button from removing things from the cart
                 removal.addEventListener('click', async (e) => {
@@ -95,11 +115,14 @@ setPersistence(auth, browserLocalPersistence)
                           
                         console.log(`Item '${name}' removed successfully.`);
                         CartDiv.remove(); 
+                        
+
                     
                     } catch (error) {
                         console.error('Error removing document:', error);
                     }
-                
+                     
+                  
                 });
 
                 const updateQuantity = (itemName, newQuantity) => {
@@ -366,6 +389,7 @@ setPersistence(auth, browserLocalPersistence)
           } catch (error) {
             console.error("Error deleting document:", error);
           }
+          
   };
     
     fetchCart() ;

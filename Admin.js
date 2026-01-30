@@ -135,8 +135,9 @@ const removeFile = async () => {
 };
 
 //showing the admin orders that are pending
-let ordersContainer=document.getElementById('orders');
 
+let ordersContainer=document.getElementById('orders');
+  
 
  const ordersForm=async()=>{
  
@@ -147,8 +148,7 @@ let ordersContainer=document.getElementById('orders');
 
 
         const ordersDocs=await getDocs(collection(db,'Orders'));   
-   
-    
+       
 
         ordersDocs.forEach(doc=>{
 
@@ -233,7 +233,16 @@ let ordersContainer=document.getElementById('orders');
                  
                    
 
-                 orderDiv.append( cat, na, q,span,line); 
+                 orderDiv.append( cat, na, q,span,line);
+                 orderDiv.style.width = '400px'; 
+                
+                 orderDiv.style.minWidth = '300px'; 
+                 orderDiv.style.height = '500px';      
+                 orderDiv.style.maxHeight = '600px'; 
+                 orderDiv.style.wordBreak = 'break-word';
+                orderDiv.style.overflowWrap = 'break-word';
+                orderDiv.style.overflowY = 'auto'; 
+                 orderDiv.style.overflowX = 'hidden'; 
 
            }); 
           
@@ -259,9 +268,12 @@ let ordersContainer=document.getElementById('orders');
           
           
            ordersContainer.appendChild(orderDiv);
-           ordersContainer.style.display='flex';
-           ordersContainer.style.flexDirection='row';
-           ordersContainer.style.backgroundColor='rgb(72, 143, 119)';
+            ordersContainer.style.display = 'flex';
+            ordersContainer.style.flexDirection = 'row';
+            ordersContainer.style.flexWrap = 'wrap';       // allows items to move to next row
+            ordersContainer.style.justifyContent = 'flex-start'; // optional: aligns divs nicely
+            ordersContainer.style.gap = '20px';          
+            ordersContainer.style.padding = '10px';    
         })
 
         
@@ -272,7 +284,19 @@ let ordersContainer=document.getElementById('orders');
     }
     
  }
- ordersForm();
+
+
+ const fetchAnalyticsData= async()=>{
+   let aws3Buck= "s3://newdonut/orders.json";
+   const Response= await fetch(aws3Buck);
+
+
+
+
+ }
+
+
+
 
 //buttons
 
@@ -287,21 +311,26 @@ let rmveVisbleorder=document.getElementById('orderRemov');
 const addProds=document.getElementById('newproducts');
 const removeProds=document.getElementById('removal');
 const  orderstab=document.getElementById('orders');
-//For button styling purposes
-function RemoveVisible(div,button,btn,but){
-    if(div.style.display==="block"){
-        div.style.display="none";
-        button.style.display="block";
-        btn.style.display="block";
-        but.style.display="block";
-    }
+
+
+order.addEventListener('click',function(e){
+    ordersForm();
+})
+
+function RemoveVisible(div, button, btn, but) {
+  if (div.style.display === "block") {
+    div.style.display = "none";
+    button.style.display = "block";
+    btn.style.display = "block";
+    but.style.display = "block";
+
+    
+    document.getElementById("removeProd").style.display = "none";
+    document.getElementById("red").style.display = "none";
+    document.getElementById("orderRemov").style.display = "none";
+  }
 }
 
-removeVisible.addEventListener('click',function(e){
-e.preventDefault();
-  RemoveVisible(addProds,remove,order,add);
-
-})
 removeVisiblerem.addEventListener('click',function(e){
     e.preventDefault();
     RemoveVisible(removeProds,remove,order,add,);
@@ -331,12 +360,186 @@ function visible(div,button,btn,but){
 
         div.style.display="block";
         div.style.flexDirection="row";
+        div.style.backgroundColor = "#C0C9EE";
         div.style.marginTop="0%";
         button.style.display="none";
         btn.style.display="none";
         but.style.display="none";
 
     }
-} 
+
+     if (div.id === "newproducts") {
+      document.getElementById("removeProd").style.display = "block";
+    } else if (div.id === "removal") {
+      document.getElementById("red").style.display = "block";
+    } else if (div.id === "orders") {
+      document.getElementById("orderRemov").style.display = "block";
+    }
+  
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const analyticsBtn = document.getElementById("analytics");
+  const analyticsSection = document.getElementById("analyticsSection");
+  const ordersSection = document.getElementById("orders");
+  const newProductsSection = document.getElementById("newproducts");
+  const removalSection = document.getElementById("removal");
+
+  analyticsBtn.addEventListener("click", () => {
+    
+    ordersSection.style.display = "none";
+    newProductsSection.style.display = "none";
+    removalSection.style.display = "none";
+
+    
+    analyticsSection.style.display = "flex";
+
+    // remove old chats
+    analyticsSection.innerHTML = `
+      <h2 style="color:pink; text-shadow: 3px 1px 3px rgb(245, 14, 133);">Sales Analytics</h2>
+      <div style="background:white; padding:20px; border-radius:10px; margin:20px; width:80%;">
+        <canvas id="topSellingChart"></canvas>
+      </div>
+      <div style="background:white; padding:20px; border-radius:10px; margin:20px; width:80%;">
+        <canvas id="loyalClientsChart"></canvas>
+      </div>
+    `;
+
+    // Fetch data from your S3 bucket
+    fetch("https://newdonut.s3.eu-north-1.amazonaws.com/orders.json") 
+      .then(res => res.json())
+      .then(data => {
+        showAnalytics(data);
+      })
+      .catch(err => console.error("Error fetching analytics data:", err));
+  });
+});
+
+function showAnalytics(data) {
+  const items = Object.values(data).flatMap(client =>
+    client.items.map(item => ({
+      ...item,
+      email: client.email,
+    }))
+  );
+
+  
+  const topSelling = {};
+  items.forEach(item => {
+    if (!topSelling[item.name]) {
+      topSelling[item.name] = { totalSold: 0, totalRevenue: 0 };
+    }
+    topSelling[item.name].totalSold += item.quantityBought;
+    topSelling[item.name].totalRevenue += item.price * item.quantityBought;
+  });
+
+  const itemNames = Object.keys(topSelling);
+  const quantities = itemNames.map(name => topSelling[name].totalSold);
+  const revenues = itemNames.map(name => topSelling[name].totalRevenue);
+
+  // 🔹 Process loyal clients
+  const clients = Object.values(data);
+  const clientEmails = clients.map(c => c.email);
+  const clientTotals = clients.map(c => c.totalPrice);
+
+  // Draw charts
+  drawTopSelling(itemNames, quantities, revenues);
+  drawLoyalClients(clientEmails, clientTotals);
+}
+
+function drawTopSelling(labels, quantities, revenues) {
+  const ctx = document.getElementById("topSellingChart").getContext("2d");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Quantity Sold",
+          data: quantities,
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+          yAxisID: "y1",
+        },
+        {
+          label: "Total Revenue (R)",
+          data: revenues,
+          backgroundColor: "rgba(153, 102, 255, 0.6)",
+          yAxisID: "y2",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Top Selling Items",
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Item Names",
+          },
+        },
+        y1: {
+          type: "linear",
+          position: "left",
+          title: {
+            display: true,
+            text: "Quantity Sold",
+          },
+          beginAtZero: true,
+        },
+        y2: {
+          type: "linear",
+          position: "right",
+          title: {
+            display: true,
+            text: "Revenue (R)",
+          },
+          beginAtZero: true,
+          grid: {
+            drawOnChartArea: false, 
+          },
+        },
+      },
+    },
+  });
+}
+
+
+function drawLoyalClients(labels, totals) {
+  const ctx = document.getElementById("loyalClientsChart").getContext("2d");
+  new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Total Spent (R)",
+          data: totals,
+          backgroundColor: [
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+            "#4BC0C0",
+            "#9966FF",
+          ],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: "Most Loyal Clients" },
+      },
+    },
+  });
+}
+
 
 

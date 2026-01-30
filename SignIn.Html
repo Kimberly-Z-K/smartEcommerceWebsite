@@ -3,85 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="account.css">
+    <title>Sign-Up</title>
 
     <style>
-        body{
-         align-items: center;
-         background-color: rgb(55, 94, 94) ;
-        }
-     
-        h1{
-          margin-left: 46%;
-         font-size:60px;
-         font-family:'Lucida Sans Unicode';
-     
-         color:pink;
-         text-shadow:3px 1px 3px  rgb(245, 14, 133);
-        
-        }
-        #header{
-         height: 85px;
-         align-items: center;
-         background-color: rgb(132, 253, 213);
-         border:solid 2px rgb(87, 20, 56);
-        }
-     
-     form{
-         
-         margin-top: 200px;
-         margin-left: 20%;
-          width:50%;
-          padding-left: 10px;
-          padding-bottom: 10px;
-         font-family:'Lucida Sans Unicode';
-         font-size: 40px;
-         color:pink;
-         text-shadow:3px 1px 3px  rgb(245, 14, 133);
-         background-color: rgb(72, 143, 119);
-         border-radius:20px
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgb(55, 94, 94);;
+            font-family: "Poppins", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-     
-     select{
-         margin-left: 50%;
-     }
-     
-     button{
-         font-family:'Lucida Sans Unicode';
-         font-size: 40px;
-         color:pink;
-         text-shadow:3px 1px 3px  rgb(245, 14, 133);
-         background-color: rgb(55, 94, 94) ;
-         
-         margin-left: 50%;
-     }
-     </style>
+        h1 {
+            position: absolute;
+            top: 40px;
+            font-size: 55px;
+            color: #ff3f9e;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
 
+        form {
+            width: 420px;
+            background:white;
+            padding: 30px;
+            padding-top: 40px;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.8s ease-in-out;
+        }
 
+        label {
+            font-size: 18px;
+            color: green;
+            font-weight: 600;
+        }
+
+        input,select {
+            width: 100%;
+            height: 38px;
+            font-size: 17px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            border: solid 2px #ff77c7;
+            padding-left: 10px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #c044ff;
+            transform: scale(1.04);
+            box-shadow: 0 0 10px rgba(192, 68, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 10px;
+            height: 48px;
+            background-color: green;
+            color: white;
+            border-radius: 12px;
+            font-size: 22px;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        button:hover {
+            background-color: #6721ad;
+            transform: translateY(-2px);
+        }
+
+        a {
+            display: block;
+            margin-top: 14px;
+            text-align: center;
+            color: #ff3f9e;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 17px;
+            transition: 0.2s;
+        }
+
+        a:hover {
+            color: #c9007d;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
+
 <body>
+
     <h1>Sign-Up</h1>
+
     <form>
-        <label for="name">Name: </label>
-        <input id="name"><br>
-        <label for="surname">Surname: </label>
-        <input id="surname"><br>
+        <label for="name">Name:</label>
+        <input id="name">
+
+        <label for="surname">Surname:</label>
+        <input id="surname">
+
         <label for="password">Password:</label>
-        <input id="password" type="password"><br>
-        <label for="user">UserName: </label>
-        <input id="user"><br>
-        <label for="loc">Location: </label>
-        <input id="loc"><br>
-        <label for="email">Email: </label>
-        <input id="email" type="email"><br>
-    
-        <button id="signinbtn">SignUp</button>
-        <a href="Login.html">Logged in?</a>
+        <input id="password" type="password">
+
+        <label for="user">Username:</label>
+        <input id="user">
+
+        <label for="loc">Location:</label>
+        <input id="loc">
+
+        <label for="email">Email:</label>
+        <input id="email" type="email">
+
+          <label for="role">Select Role:</label>
+        <select id="role">
+            <option id="customer" value="customer">Customer</option>
+            <option id="Admin" value="admin">Admin</option>
+        </select>
+
+        <button id="signinbtn">Sign Up</button>
+      
+
+        <a href="Login.html">Already logged in?</a>
     </form>
-    <script type='module' src="Accounts.js"></script>
-    
-    
+
+    <script type="module" src="Accounts.js"></script>
+
 </body>
 </html>
