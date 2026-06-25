@@ -35,8 +35,8 @@ const awss3 = new S3Client({
 
 
 //const axios = require('axios');
-
-app.listen(3001, () => {
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
   
   console.log("Server is running on http://localhost:3001");
 });
