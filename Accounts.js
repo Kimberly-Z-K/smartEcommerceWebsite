@@ -86,7 +86,7 @@ const signUp = async () => {
 
         alert("You've been successfully signed up!");
         //  redirect after signup
-        window.location.href = "Login.Html";
+        window.location.href = "Login.html";
 
     } catch (error) {
         console.error('Error during sign-up:', error);
