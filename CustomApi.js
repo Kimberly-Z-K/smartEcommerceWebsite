@@ -1,19 +1,28 @@
-import axios from 'axios';
+//import axios from 'axios';
 
 require("dotenv").config();
 const express = require("express");
+const cors= require("cors");
 const admin = require("./firebaseAdminConfig");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+//const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+//const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-
-
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  ListObjectsV2Command
+} = require("@aws-sdk/client-s3");
 console.log("Loaded ENV Vars:");
 console.log("FIREBASE_CLIENT_EMAIL:", process.env.FIREBASE_CLIENT_EMAIL);
 console.log("AWS_BUCKET_NAME:", process.env.AWS_BUCKET_NAME);
 
 
 const app = express();
+app.use(cors());
 app.use(express.json());
+
+const axios = require("axios");
 
 const awss3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -25,7 +34,7 @@ const awss3 = new S3Client({
 });
 
 
-const axios = require('axios');
+//const axios = require('axios');
 
 app.listen(3001, () => {
   
@@ -66,7 +75,7 @@ db.collection("Orders").onSnapshot((snap) => {
   });
 });
 //second route to get data from the s3 bucket
-app.get("https://newdonut.s3.eu-north-1.amazonaws.com/orders.json", async (req, res) => {
+/*app.get("https://newdonut.s3.eu-north-1.amazonaws.com/orders.json", async (req, res) => {
   try {
     const getObjCommand = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
@@ -80,7 +89,53 @@ app.get("https://newdonut.s3.eu-north-1.amazonaws.com/orders.json", async (req, 
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});*/
+
+app.get("/orders", async (req, res) => {
+  try {
+    console.log("Fetching orders...");
+
+    const list = await awss3.send(
+      new ListObjectsV2Command({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Prefix: "Orders/",
+      })
+    );
+
+    const files = list.Contents || [];
+
+    const orders = await Promise.all(
+      files.map(async (file) => {
+        try {
+          const data = await awss3.send(
+            new GetObjectCommand({
+              Bucket: process.env.AWS_BUCKET_NAME,
+              Key: file.Key,
+            })
+          );
+
+          const body = await data.Body.transformToString();
+
+          return JSON.parse(body);
+        } catch (err) {
+          console.log("Skipping bad file:", file.Key);
+          return null;
+        }
+      })
+    );
+
+    // remove broken files
+    const cleanOrders = orders.filter(Boolean);
+
+    res.json(cleanOrders);
+
+  } catch (err) {
+    console.error("ORDERS ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
+
+//import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 
 
 const streamToString = (stream) =>

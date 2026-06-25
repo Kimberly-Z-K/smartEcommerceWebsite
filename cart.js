@@ -329,6 +329,7 @@ setPersistence(auth, browserLocalPersistence)
                 items: cartItems,
                 totalPrice: newP,
                 location: loc,
+                status:"pending",
                 orderDate: new Date().toISOString(),
             };
     
@@ -364,10 +365,13 @@ setPersistence(auth, browserLocalPersistence)
      //buy button responsible for bringing location form
     const setupBuyButton = () => {
         const buybutton = document.getElementById('buying');
+        const buyForm= document.getElementById("buyingform");
     
         buybutton.addEventListener('click', async (e) => {
             e.preventDefault();
             console.log("Buy button clicked with values:", { mail, newP,cartItems});
+            buyForm.style.display="none";
+
     
          
             await placeOrder();
@@ -389,6 +393,8 @@ setPersistence(auth, browserLocalPersistence)
           } catch (error) {
             console.error("Error deleting document:", error);
           }
+       locationForm.style.display = 'none';
+          
           
   };
     

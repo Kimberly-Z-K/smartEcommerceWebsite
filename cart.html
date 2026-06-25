@@ -32,16 +32,19 @@ body{
 }
 
 /* HOME ICON */
-#homeicon{
+#homeiconlink {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+#homeicon {
     font-size: 70px;
     color: pink;
     text-shadow: 3px 1px 3px rgb(245, 14, 133);
     transition: 0.3s ease-in-out;
-    display: block;
-    margin: auto;
-    margin-top: 10px;
 }
-
 #homeicon:hover{
     color:#BDB2FF;
     transform: scale(1.2);
@@ -80,7 +83,7 @@ body{
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* CART ITEMS — container styling added by JS looks okay, so only enhancing */
+
 #Cartitems{
     width: 100%;
 }
@@ -182,7 +185,7 @@ body{
         <a href="shop.Html" id="backshopping">Go back to shop</a>
     </div>
 
-    <form id="buyingform">
+    <form id="buyingform" >
         <div id="Cartitems"></div>
         <button id="buying">Buy</button>
         <h2 id="TotalPrice">Total Price: R0.00</h2>

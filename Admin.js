@@ -1,430 +1,273 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
-import { getFirestore, collection, addDoc,query, where,getDocs, deleteDoc,getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, updateDoc,doc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDfksP9wLa7sznEWDXSRwhHsgcHNeRAxg8",
-    authDomain: "donutweb-2bf64.firebaseapp.com",
-    projectId: "donutweb-2bf64",
-    storageBucket: "donutweb-2bf64.appspot.com",
-    messagingSenderId: "709582753728",
-    appId: "1:709582753728:web:4a1f1bb40a28bd03f7c225"
+  apiKey: "AIzaSyDfksP9wLa7sznEWDXSRwhHsgcHNeRAxg8",
+  authDomain: "donutweb-2bf64.firebaseapp.com",
+  projectId: "donutweb-2bf64",
+  storageBucket: "donutweb-2bf64.appspot.com",
+  messagingSenderId: "709582753728",
+  appId: "1:709582753728:web:4a1f1bb40a28bd03f7c225"
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
-const storage = getStorage(app);
 
 
 
+const cupcakeVid = document.querySelector("video");
 
+const sections = document.querySelectorAll(".section");
+
+function hideVideo() {
+  if (cupcakeVid) cupcakeVid.style.display = "none";
+}
+
+function showSection(id) {
+  sections.forEach(sec => sec.style.display = "none");
+  document.getElementById(id).style.display = "block";
+  hideVideo();
+}
+
+
+document.getElementById("add").onclick = () => showSection("newproducts");
+
+document.getElementById("remove").onclick = () => showSection("removal");
+
+document.getElementById("order").onclick = () => {
+  showSection("orders");
+  loadOrders();
+};
+
+document.getElementById("analytics").onclick = () => {
+  showSection("analyticsSection");
+  loadAnalytics();
+};
+
+
+// IMAGE PREVIEW
 const imageInput = document.getElementById('imageInput');
-const productPreview = document.getElementById('preview');
-const addProductButton = document.getElementById('addProduct');
+const preview = document.getElementById('preview');
 
 imageInput.addEventListener('change', () => {
-    productPreview.innerHTML = '';
-    const file = imageInput.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = 'Product Preview';
-            img.style.maxWidth = '300px';
-            img.style.border = '1px solid #ccc';
-            productPreview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-    }
-});
+  preview.innerHTML = '';
+  const file = imageInput.files[0];
+  if (!file) return;
 
-addProductButton.addEventListener("click",function(e){
-    e.preventDefault(e)
-    addImages()
-
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    preview.appendChild(img);
+  };
+  reader.readAsDataURL(file);
 });
 
 
-const addImages = async () => {
-    const imgElement = productPreview.querySelector('img');
-    const category = document.getElementById('cat').value.trim();
-    const productname = document.getElementById('productname').value.trim();
-    const description = document.getElementById('descript').value.trim();
-    const quantity = document.getElementById('count').value.trim();
-    const price=document.getElementById('price').value.trim();
+// ADD PRODUCT
+document.getElementById("addProduct").onclick = async (e) => {
+  e.preventDefault();
+  hideVideo();
 
-    if (!category || !productname || !description || !quantity || !price) {
-        alert("All fields are required!");
-        return;
-    }
+  const category = cat.value.trim();
+  const name = productname.value.trim();
+  const description = descript.value.trim();
+  const quantity = count.value.trim();
+  const Price = price.value.trim();
 
-    if (!imgElement) {
-        alert("Please select an image to upload.");
-        return;
-    }
+  if (!category || !name || !description || !quantity || !Price) {
+    alert("Fill all fields!");
+    return;
+  }
 
-    try {
-        const srcURL = imgElement.src; 
-        
-        await addDoc(collection(db, "products"), {
-            name: productname,
-            category: category,
-            description: description,
-            quantity: parseInt(quantity, 10), 
-            imageUrl: srcURL,
-            price: parseFloat(price),
-        });
+  const img = preview.querySelector("img");
+  if (!img) return alert("Upload image!");
 
-        alert("Product added successfully!");
-        resetForm();
-    } catch (error) {
-        console.error("Error saving product details:", error);
-        alert("Failed to save product details.");
-    }
+  try {
+    await addDoc(collection(db, "products"), {
+      name,
+      category,
+      description,
+      quantity: parseInt(quantity),
+      price: parseFloat(Price),
+      imageUrl: img.src
+    });
+
+    alert("Product added!");
+    clearAddForm();
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to add product");
+  }
 };
 
+function clearAddForm() {
+  cat.value = "";
+  productname.value = "";
+  descript.value = "";
+  count.value = "";
+  price.value = "";
+  preview.innerHTML = "";
+}
 
-const resetForm = () => {
-    document.getElementById('cat').value = '';
-    document.getElementById('productname').value = '';
-    document.getElementById('descript').value = '';
-    document.getElementById('count').value = '';
-    document.getElementById('price').value='';
-    productPreview.innerHTML = '';
-    addProductButton.disabled = false;
+document.getElementById("removeProd").onclick = clearAddForm;
+
+
+// REMOVE PRODUCT
+document.getElementById("removeProduct").onclick = async (e) => {
+  e.preventDefault();
+  hideVideo();
+
+  const name = prodname.value.trim();
+  if (!name) return alert("Enter product name");
+
+  const q = query(collection(db, "products"), where("name", "==", name));
+  const snap = await getDocs(q);
+
+  if (snap.empty) return alert("Product not found");
+
+  await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+
+  alert("Deleted!");
+  prodname.value = "";
 };
 
-let remvButton=document.getElementById('removeProduct');
+document.getElementById("red").onclick = () => prodname.value = "";
 
-remvButton.addEventListener('click',(e)=>{
-    e.preventDefault();
-   removeFile();
-})
 
-const removeFile = async () => {
-    let rmvName = document.getElementById('prodname').value.trim();
+// ORDERS
 
+async function loadOrders() {
+  const ordersDiv = document.getElementById("orders");
+  hideVideo();
+
+  ordersDiv.style.justifyContent = "center";
+  ordersDiv.style.display = "flex";
+ordersDiv.style.flexDirection = "row";
+ordersDiv.style.flexWrap = "wrap";
+ordersDiv.style.gap = "20px";
+
+  ordersDiv.innerHTML = "";
+  
+
+  const docs = await getDocs(collection(db, "Orders"));
+
+  if (docs.empty) {
+    const box = document.createElement("div");
+
+    box.style.background = "#FFF5EE";
+    box.style.marginBottom = "20px";
+    box.style.padding = "15px";
+    box.style.borderRadius = "8px";
+    box.style.width = "350px";
+
+    box.innerHTML = `<h3>No orders currently</h3>`;
+
+    ordersDiv.appendChild(box); 
+
+    return; 
+}
+  docs.forEach(docSnap => {
+    const data = docSnap.data();
+
+    const box = document.createElement("div");
+    
+    box.style.background = "#FFF5EE";
+    box.style.marginBottom = "20px";
+   // box.style.marginLeft = "25%";
+    box.style.padding = "15px";
+    box.style.borderRadius = "8px";
+    box.style.width = "350px";
+
+    
+    box.innerHTML = `<h3>${data.email}</h3>`;
+
+    // ITEMS
+    if (data.items) {
+      data.items.forEach(i => {
+        const p = document.createElement("p");
+        p.innerText = `${i.name} x${i.quantityBought} - R${i.price}`;
+        box.appendChild(p);
+      });
+    }
+
+    // TOTAL
+    const total = document.createElement("h4");
+    total.style.color="#FF007F";
+    total.innerText = "Total: R" + data.totalPrice;
+    box.appendChild(total);
+
+    // STATUS DROPDOWN
+    const statusSelect = document.createElement("select");
+   statusSelect.style.background="#E6E6FA";
+    const pendingOption = document.createElement("option");
+    pendingOption.value = "Pending";
+    pendingOption.textContent = "Pending";
+
+    const completeOption = document.createElement("option");
+    completeOption.value = "Complete";
+    completeOption.textContent = "Complete";
+
+    statusSelect.appendChild(pendingOption);
+    statusSelect.appendChild(completeOption);
+
+    statusSelect.value = data.status || "Pending";
+
+    statusSelect.style.marginTop = "10px";
+    statusSelect.style.padding = "5px";
+    statusSelect.style.borderRadius = "5px";
+
+    
+    
+
+          statusSelect.addEventListener("change", async () => {
     try {
-        
-        const productDocsRef = collection(db, "products");
-        const q = query(productDocsRef, where("name", "==", rmvName));
+        const status = statusSelect.value;
 
-        
-        const productSnapshot = await getDocs(q);
-
-        if (productSnapshot.empty) {
-            alert(`No product found with the name "${rmvName}".`);
-            return;
-        }
-
-      
-       const promises= productSnapshot.docs.map((docSnapshot) =>
-            deleteDoc(docSnapshot.ref)
+        await updateDoc(
+            doc(db, "Orders", docSnap.id),
+            {
+                status: status
+            }
         );
 
-        
-        await Promise.all(promises);
+        console.log("Order updated successfully");
+        loadOrders();
 
-        alert(`Product "${rmvName}" has been successfully deleted.`);
     } catch (error) {
-        console.error('Error deleting your data from the database:', error);
-        alert('Error deleting your data from the database.');
+        console.error("Error updating order:", error);
     }
-};
-
-//showing the admin orders that are pending
-
-let ordersContainer=document.getElementById('orders');
+});
   
 
- const ordersForm=async()=>{
- 
-     
-   
-   try{
+    box.appendChild(statusSelect);
 
-
-
-        const ordersDocs=await getDocs(collection(db,'Orders'));   
-       
-
-        ordersDocs.forEach(doc=>{
-
-            let select = document.createElement('select');
-            let option1 = document.createElement('option');
-            option1.value = 'Pending';
-            option1.innerText = 'Pending';
-            let option2 = document.createElement('option');
-            option2.value = 'Shipped';
-            option2.innerText = 'Shipped';
-            let option3 = document.createElement('option');
-            option3.value = 'Delivered';
-            option3.innerText = 'Delivered';
-
-            select.append(option1, option2, option3);
-
-           // let orderDiv=document.getElementById('orderitem');
-           let orderDiv = document.createElement('div');
-              orderDiv.style.backgroundColor='white';
-           orderDiv.style.marginTop='10%';
-           orderDiv.style.marginBottom='5%';
-           orderDiv.style.marginRight='5%';
-           orderDiv.style.width='25%';
-           orderDiv.style.alignItems='center';
-            orderDiv.style.borderStyle='solid';
-           orderDiv.style.borderColor='white';
-           orderDiv.style.borderWidth='2px';
-           orderDiv.style.padding = '10px';
-
-           let headin=document.createElement('h2');
-           headin.innerText='Zees Donuts';
-           headin.style.marginLeft='25%';
-           orderDiv.appendChild(headin);
-            const ord=doc.data();
-
-          /*  let email=JSON.stringify(ord.email,null,2);
-            let items=JSON.stringify(ord.items,null,2);
-            let loc=JSON.stringify(ord.location,null,2);
-
-            console.log(email,items,loc);*/
-            let email=ord.email;
-            console.log(email);
-           
-
-
-
-            let category;
-            let name;
-            let price;
-            let quantityBought;
-
-      
-            ord.items.forEach(item =>{
-
-                
-            
-               
-    
-
-                let cat=document.createElement('h3');
-                let na=document.createElement('h3');
-                let q=document.createElement('h3');
-                let span=document.createElement('span');
-
-            //fetching the data from the database
-                  category=item.category;
-                  name=item.name;
-                  price=item.price;
-                  quantityBought=item.quantityBought;
-                
-                //displaying the data
-                
-                 cat.innerText=category;
-                 na.innerText=name;
-                 q.innerText=quantityBought;
-                 span.innerText=price;
-                 
- 
-                 let line=document.createElement('div');
-                 line.style.width='100%';
-                 line.style.borderBottom='dashed';
-                 
-                   
-
-                 orderDiv.append( cat, na, q,span,line);
-                 orderDiv.style.width = '400px'; 
-                
-                 orderDiv.style.minWidth = '300px'; 
-                 orderDiv.style.height = '500px';      
-                 orderDiv.style.maxHeight = '600px'; 
-                 orderDiv.style.wordBreak = 'break-word';
-                orderDiv.style.overflowWrap = 'break-word';
-                orderDiv.style.overflowY = 'auto'; 
-                 orderDiv.style.overflowX = 'hidden'; 
-
-           }); 
-          
-          let totalp=ord.totalPrice;
-          let h1=document.createElement('h2');
-          h1.innerText=totalp;
-          
-
-           let city=ord.location.city;
-           let cit=document.createElement('h2');
-           cit.innerText=city;
-
-           let country=ord.location.country;
-           let cou=document.createElement('h2');
-           cou.innerText=country;
-
-           let street=ord.location.street;
-           let stree=document.createElement('h2');
-           stree.innerText=street;
-          // let orderD=ord.orderDate;
-           //console.log(country,street,orderD);
-           orderDiv.append(h1 ,cit,cou,stree,select);
-          
-          
-           ordersContainer.appendChild(orderDiv);
-            ordersContainer.style.display = 'flex';
-            ordersContainer.style.flexDirection = 'row';
-            ordersContainer.style.flexWrap = 'wrap';       // allows items to move to next row
-            ordersContainer.style.justifyContent = 'flex-start'; // optional: aligns divs nicely
-            ordersContainer.style.gap = '20px';          
-            ordersContainer.style.padding = '10px';    
-        })
-
-        
-
-   }
-   catch(error){
-        console.log('error while fetching orders',error);
-    }
-    
- }
-
-
- const fetchAnalyticsData= async()=>{
-   let aws3Buck= "s3://newdonut/orders.json";
-   const Response= await fetch(aws3Buck);
-
-
-
-
- }
-
-
-
-
-//buttons
-
-let remove=document.getElementById('remove');
-let order=document.getElementById('order');
-let add=document.getElementById('add');
-let removeVisible=document.getElementById('removeProd');
-let removeVisiblerem=document.getElementById('red');
-let rmveVisbleorder=document.getElementById('orderRemov');
-//divs they show
-
-const addProds=document.getElementById('newproducts');
-const removeProds=document.getElementById('removal');
-const  orderstab=document.getElementById('orders');
-
-
-order.addEventListener('click',function(e){
-    ordersForm();
-})
-
-function RemoveVisible(div, button, btn, but) {
-  if (div.style.display === "block") {
-    div.style.display = "none";
-    button.style.display = "block";
-    btn.style.display = "block";
-    but.style.display = "block";
-
-    
-    document.getElementById("removeProd").style.display = "none";
-    document.getElementById("red").style.display = "none";
-    document.getElementById("orderRemov").style.display = "none";
-  }
-}
-
-removeVisiblerem.addEventListener('click',function(e){
-    e.preventDefault();
-    RemoveVisible(removeProds,remove,order,add,);
-})
-
-rmveVisbleorder.addEventListener('click',function(e){
-    e.preventDefault();
-    RemoveVisible(orderstab,remove,order,add);
-})
-
-
-add.addEventListener('click', function() {
-    visible(addProds,remove,order,add);
-});
-
-
-remove.addEventListener('click',function(){
-    visible(removeProds,add,order,remove);
-});
-
-order.addEventListener('click',function(){
-    visible(orderstab,remove,add,order);
-});
-
-function visible(div,button,btn,but){
-    if(div.style.display==="none"||div.style.display===""){
-
-        div.style.display="block";
-        div.style.flexDirection="row";
-        div.style.backgroundColor = "#C0C9EE";
-        div.style.marginTop="0%";
-        button.style.display="none";
-        btn.style.display="none";
-        but.style.display="none";
-
-    }
-
-     if (div.id === "newproducts") {
-      document.getElementById("removeProd").style.display = "block";
-    } else if (div.id === "removal") {
-      document.getElementById("red").style.display = "block";
-    } else if (div.id === "orders") {
-      document.getElementById("orderRemov").style.display = "block";
-    }
-  
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const analyticsBtn = document.getElementById("analytics");
-  const analyticsSection = document.getElementById("analyticsSection");
-  const ordersSection = document.getElementById("orders");
-  const newProductsSection = document.getElementById("newproducts");
-  const removalSection = document.getElementById("removal");
-
-  analyticsBtn.addEventListener("click", () => {
-    
-    ordersSection.style.display = "none";
-    newProductsSection.style.display = "none";
-    removalSection.style.display = "none";
-
-    
-    analyticsSection.style.display = "flex";
-
-    // remove old chats
-    analyticsSection.innerHTML = `
-      <h2 style="color:pink; text-shadow: 3px 1px 3px rgb(245, 14, 133);">Sales Analytics</h2>
-      <div style="background:white; padding:20px; border-radius:10px; margin:20px; width:80%;">
-        <canvas id="topSellingChart"></canvas>
-      </div>
-      <div style="background:white; padding:20px; border-radius:10px; margin:20px; width:80%;">
-        <canvas id="loyalClientsChart"></canvas>
-      </div>
-    `;
-
-    // Fetch data from your S3 bucket
-    fetch("https://newdonut.s3.eu-north-1.amazonaws.com/orders.json") 
-      .then(res => res.json())
-      .then(data => {
-        showAnalytics(data);
-      })
-      .catch(err => console.error("Error fetching analytics data:", err));
+    ordersDiv.appendChild(box);
   });
-});
+}
+
+
+// ANALYTICS
+async function loadAnalytics() {
+  hideVideo();
+
+  const res = await fetch("http://localhost:3001/orders");
+  const data = await res.json();
+
+  showAnalytics(data);
+}
 
 function showAnalytics(data) {
+  hideVideo();
+
   const items = Object.values(data).flatMap(client =>
     client.items.map(item => ({
       ...item,
-      email: client.email,
+      email: client.email
     }))
   );
 
-  
   const topSelling = {};
   items.forEach(item => {
     if (!topSelling[item.name]) {
@@ -438,108 +281,35 @@ function showAnalytics(data) {
   const quantities = itemNames.map(name => topSelling[name].totalSold);
   const revenues = itemNames.map(name => topSelling[name].totalRevenue);
 
-  // 🔹 Process loyal clients
   const clients = Object.values(data);
   const clientEmails = clients.map(c => c.email);
   const clientTotals = clients.map(c => c.totalPrice);
 
-  // Draw charts
   drawTopSelling(itemNames, quantities, revenues);
   drawLoyalClients(clientEmails, clientTotals);
 }
 
-function drawTopSelling(labels, quantities, revenues) {
-  const ctx = document.getElementById("topSellingChart").getContext("2d");
 
-  new Chart(ctx, {
+// CHARTS
+function drawTopSelling(labels, quantities, revenues) {
+  new Chart(document.getElementById("topSellingChart"), {
     type: "bar",
     data: {
       labels,
       datasets: [
-        {
-          label: "Quantity Sold",
-          data: quantities,
-          backgroundColor: "rgba(75, 192, 192, 0.6)",
-          yAxisID: "y1",
-        },
-        {
-          label: "Total Revenue (R)",
-          data: revenues,
-          backgroundColor: "rgba(153, 102, 255, 0.6)",
-          yAxisID: "y2",
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: "Top Selling Items",
-        },
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: "Item Names",
-          },
-        },
-        y1: {
-          type: "linear",
-          position: "left",
-          title: {
-            display: true,
-            text: "Quantity Sold",
-          },
-          beginAtZero: true,
-        },
-        y2: {
-          type: "linear",
-          position: "right",
-          title: {
-            display: true,
-            text: "Revenue (R)",
-          },
-          beginAtZero: true,
-          grid: {
-            drawOnChartArea: false, 
-          },
-        },
-      },
-    },
+        { label: "Quantity Sold", data: quantities },
+        { label: "Total Revenue (R)", data: revenues }
+      ]
+    }
   });
 }
 
-
 function drawLoyalClients(labels, totals) {
-  const ctx = document.getElementById("loyalClientsChart").getContext("2d");
-  new Chart(ctx, {
+  new Chart(document.getElementById("loyalClientsChart"), {
     type: "pie",
     data: {
       labels,
-      datasets: [
-        {
-          label: "Total Spent (R)",
-          data: totals,
-          backgroundColor: [
-            "#FF6384",
-            "#36A2EB",
-            "#FFCE56",
-            "#4BC0C0",
-            "#9966FF",
-          ],
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        title: { display: true, text: "Most Loyal Clients" },
-      },
-    },
+      datasets: [{ data: totals }]
+    }
   });
 }
-
-
-

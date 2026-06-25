@@ -19,7 +19,7 @@
         /* Sign In Button */
         a {
             text-decoration: none;
-            color:pink ;
+            color: pink;
             background-color: white;
             padding: 10px 20px;
             border-radius: 12px;
@@ -60,29 +60,13 @@
             margin: 0 auto;
         }
 
-        /* Admin Info */
-        .admin-box {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: rgba(255,255,255,0.6);
-            border-radius: 20px;
-            width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        /* Home Button */
+        .home-btn {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            right: auto;
         }
-
-        .admin-box span {
-            display: block;
-            font-size: 18px;
-            margin: 5px 0;
-            color: #6b2b8c;
-        }
-
-        .admin-box h2 {
-            color: #5a1d72;
-        }
-
     </style>
 </head>
 
@@ -90,21 +74,23 @@
 
     <a href="SignIn.Html">Sign In</a>
 
+    <a href="index.HTML" class="home-btn">
+        <i class="bi bi-house"></i> Home
+    </a>
+
     <div id="welcomemessage">
         <h1>Welcome back</h1>
         <h1 id="user"></h1>
     </div>
-     <a href="index.HTML"  style="margin-right: 90%;"><i class="bi bi-house"></i> Home</a>
-   
-    <div id="pending"></div>
 
-    <div class="admin-box">
-        <h2>Admin Login Details</h2>
-        <span><strong>Password:</strong> zeeOwner_7</span>
-        <span><strong>Email:</strong> zeek@gmail.com</span>
-    </div>
+       <div id="pending">
+                
+                
+            </div>
 
-    <script type='module' src="Accounts.js"></script>
+  
+
+    <script type="module" src="Accounts.js"></script>
 
 </body>
 </html>
