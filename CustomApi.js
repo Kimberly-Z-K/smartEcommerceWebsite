@@ -91,6 +91,13 @@ db.collection("Orders").onSnapshot((snap) => {
   }
 });*/
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "online",
+    message: "Smart Ecommerce API"
+  });
+});
+
 app.get("/orders", async (req, res) => {
   try {
     console.log("Fetching orders...");
