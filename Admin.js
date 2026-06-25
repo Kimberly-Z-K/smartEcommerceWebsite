@@ -249,32 +249,63 @@ ordersDiv.style.gap = "20px";
 
 
 // ANALYTICS
+let topSellingChart;
+let loyalClientsChart;
+
 async function loadAnalytics() {
   hideVideo();
 
-  const res = await fetch("https://smartecommercewebsite.onrender.com/orders");
-  const data = await res.json();
+  const container = document.getElementById("analyticsSection");
 
-  showAnalytics(data);
+ 
+  container.innerHTML = "<p>Loading analytics...</p>";
+
+  try {
+   
+    const res = await fetch("https://smartecommercewebsite.onrender.com/orders");
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch analytics");
+    }
+
+    const data = await res.json();
+
+    
+    container.innerHTML = "";
+
+
+    showAnalytics(data);
+
+  } catch (error) {
+    console.error("Analytics error:", error);
+    container.innerHTML = "<p>Failed to load analytics. Try again.</p>";
+  }
 }
 
 function showAnalytics(data) {
   hideVideo();
 
+  if (!data) return;
+
   const items = Object.values(data).flatMap(client =>
-    client.items.map(item => ({
+    (client.items || []).map(item => ({
       ...item,
-      email: client.email
+      email: client.email || "unknown"
     }))
   );
 
   const topSelling = {};
+
   items.forEach(item => {
     if (!topSelling[item.name]) {
-      topSelling[item.name] = { totalSold: 0, totalRevenue: 0 };
+      topSelling[item.name] = {
+        totalSold: 0,
+        totalRevenue: 0
+      };
     }
-    topSelling[item.name].totalSold += item.quantityBought;
-    topSelling[item.name].totalRevenue += item.price * item.quantityBought;
+
+    topSelling[item.name].totalSold += item.quantityBought || 0;
+    topSelling[item.name].totalRevenue += (item.price || 0) * (item.quantityBought || 0);
   });
 
   const itemNames = Object.keys(topSelling);
@@ -282,34 +313,51 @@ function showAnalytics(data) {
   const revenues = itemNames.map(name => topSelling[name].totalRevenue);
 
   const clients = Object.values(data);
-  const clientEmails = clients.map(c => c.email);
-  const clientTotals = clients.map(c => c.totalPrice);
+  const clientEmails = clients.map(c => c.email || "unknown");
+  const clientTotals = clients.map(c => c.totalPrice || 0);
 
   drawTopSelling(itemNames, quantities, revenues);
   drawLoyalClients(clientEmails, clientTotals);
 }
 
-
 // CHARTS
 function drawTopSelling(labels, quantities, revenues) {
-  new Chart(document.getElementById("topSellingChart"), {
+
+  if (topSellingChart) {
+    topSellingChart.destroy();
+  }
+
+  topSellingChart = new Chart(document.getElementById("topSellingChart"), {
     type: "bar",
     data: {
       labels,
       datasets: [
-        { label: "Quantity Sold", data: quantities },
-        { label: "Total Revenue (R)", data: revenues }
+        {
+          label: "Quantity Sold",
+          data: quantities
+        },
+        {
+          label: "Total Revenue (R)",
+          data: revenues
+        }
       ]
     }
   });
 }
 
 function drawLoyalClients(labels, totals) {
-  new Chart(document.getElementById("loyalClientsChart"), {
+
+  if (loyalClientsChart) {
+    loyalClientsChart.destroy();
+  }
+
+  loyalClientsChart = new Chart(document.getElementById("loyalClientsChart"), {
     type: "pie",
     data: {
       labels,
-      datasets: [{ data: totals }]
+      datasets: [{
+        data: totals
+      }]
     }
   });
 }
