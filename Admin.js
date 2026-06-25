@@ -252,7 +252,7 @@ ordersDiv.style.gap = "20px";
 async function loadAnalytics() {
   hideVideo();
 
-  const res = await fetch("http://smartEcommerceWebsite.onrender.com/orders");
+  const res = await fetch("https://smartecommercewebsite.onrender.com/orders");
   const data = await res.json();
 
   showAnalytics(data);
