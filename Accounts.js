@@ -153,6 +153,9 @@ const login = async () => {
 
 // PERSISTENT LOGIN 
 onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+     if (!window.location.pathname.includes("Login")) return;
+
     if (user) {
         console.log("User still logged in:", user.email);
         if(user.email){
