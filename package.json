@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-
   "scripts": {
     "start": "node CustomApi.js",
     "devStart": "nodemon CustomApi.js "
@@ -12,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1075.0",
     "axios": "^1.17.0",
     "cors": "^2.8.6",
     "dotenv": "^16.4.7",
