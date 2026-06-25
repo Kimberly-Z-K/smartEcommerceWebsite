@@ -38,7 +38,7 @@ const awss3 = new S3Client({
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   
-  console.log("Server is running on ${PORT}");
+  console.log('Server is running on ${PORT}');
 });
 
 
